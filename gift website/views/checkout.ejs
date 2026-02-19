@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - GiftShop</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="logo">
+        <a href="/">
+          <i class="fas fa-gift"></i>
+          GiftShop
+        </a>
+      </h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart <span id="cart-count" class="cart-count">0</span></a>
+        <a href="/wishlist">Wishlist <span id="wishlist-count" class="cart-count">0</span></a>
+        <div class="profile-dropdown">
+          <button class="profile-btn">
+            <i class="fas fa-user"></i>
+            Account
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <% if (session && session.user) { %>
+              <a href="/profile"><i class="fas fa-user-circle"></i> My Profile</a>
+              <a href="/orders"><i class="fas fa-shopping-bag"></i> My Orders</a>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <% } else { %>
+              <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+              <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+            <% } %>
+            <hr>
+            <a href="/admin/login"><i class="fas fa-cog"></i> Admin Panel</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="checkout-section">
+    <div class="container checkout-container">
+      <h2>🛒 Checkout</h2>
+      
+      <div class="checkout-wrapper">
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div id="order-items"></div>
+          <div class="summary-totals">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span>$<span id="summary-subtotal">0.00</span></span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping:</span>
+              <span>$<span id="summary-shipping">5.00</span></span>
+            </div>
+            <div class="summary-row">
+              <span>Tax (2%):</span>
+              <span>$<span id="summary-tax">0.00</span></span>
+            </div>
+            <hr>
+            <div class="summary-row total">
+              <span>Total:</span>
+              <span>$<span id="summary-total">0.00</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="checkout-form">
+          <h3>Delivery Information</h3>
+          
+          <form id="checkout-form">
+            <div class="form-section">
+              <h4>Shipping Address</h4>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fullname">Full Name <span class="required">*</span></label>
+                  <input type="text" id="fullname" name="fullname" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address <span class="required">*</span></label>
+                  <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone">Phone Number <span class="required">*</span></label>
+                  <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
+                </div>
+                <div class="form-group">
+                  <label for="zipcode">Zip Code <span class="required">*</span></label>
+                  <input type="text" id="zipcode" name="zipcode" required placeholder="12345">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address">Street Address <span class="required">*</span></label>
+                <input type="text" id="address" name="address" required placeholder="123 Main Street">
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="city">City <span class="required">*</span></label>
+                  <input type="text" id="city" name="city" required placeholder="New York">
+                </div>
+                <div class="form-group">
+                  <label for="state">State <span class="required">*</span></label>
+                  <input type="text" id="state" name="state" required placeholder="NY">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="country">Country <span class="required">*</span></label>
+                <input type="text" id="country" name="country" required placeholder="United States">
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>Payment Method</h4>
+              
+              <div class="payment-options">
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="cod" checked>
+                  <span class="payment-label">
+                    <i class="fas fa-money-bill"></i>
+                    Cash on Delivery (COD)
+                  </span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="credit_card">
+                  <span class="payment-label">
+                    <i class="fas fa-credit-card"></i>
+                    Credit/Debit Card
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>Delivery Options</h4>
+              
+              <label class="checkbox-option">
+                <input type="checkbox" id="express-delivery" name="expressDelivery">
+                <span>Express Delivery (+$10) - 1-2 Business Days</span>
+              </label>
+              
+              <label class="checkbox-option">
+                <input type="checkbox" id="gift-wrap" name="giftWrap">
+                <span>Gift Wrapping (+$5)</span>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <a href="/cart" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Cart
+              </a>
+              <button type="submit" class="btn btn-primary" id="place-order-btn">
+                <i class="fas fa-check-circle"></i> Place Order
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 GiftShop. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    function loadOrderSummary() {
+      const container = document.getElementById('order-items');
+      container.innerHTML = '';
+
+      let subtotal = 0;
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        
+        container.innerHTML += `
+          <div class="order-item">
+            <div class="item-details">
+              <h4>${item.name}</h4>
+              <p>${item.quantity} x $${item.price.toFixed(2)}</p>
+            </div>
+            <span class="item-total">$${itemTotal.toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      const shipping = 5;
+      const tax = subtotal * 0.02;
+      const total = subtotal + shipping + tax;
+
+      document.getElementById('summary-subtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('summary-tax').textContent = tax.toFixed(2);
+      document.getElementById('summary-total').textContent = total.toFixed(2);
+    }
+
+    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        fullname: document.getElementById('fullname').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zipcode: document.getElementById('zipcode').value,
+        country: document.getElementById('country').value
+      };
+
+      const subtotal = parseFloat(document.getElementById('summary-subtotal').textContent);
+      const shipping = 5;
+      const tax = subtotal * 0.02;
+      const total = subtotal + shipping + tax;
+
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: cart,
+            total,
+            shippingAddress: formData,
+            paymentMethod: document.querySelector('input[name="paymentMethod"]:checked').value
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          localStorage.removeItem('cart');
+          alert('Order placed successfully! Order ID: ' + result.orderId);
+          window.location.href = '/orders';
+        } else {
+          alert('Error: ' + result.error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to place order');
+      }
+    });
+
+    loadOrderSummary();
+  </script>
+</body>
+</html>

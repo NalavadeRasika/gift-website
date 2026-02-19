@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - GiftShop</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="logo">
+        <a href="/">
+          <i class="fas fa-gift"></i>
+          GiftShop
+        </a>
+      </h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart <span id="cart-count" class="cart-count">0</span></a>
+        <a href="/wishlist">Wishlist <span id="wishlist-count" class="cart-count">0</span></a>
+        <div class="profile-dropdown">
+          <button class="profile-btn">
+            <i class="fas fa-user"></i>
+            Account
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <% if (session && session.user) { %>
+              <a href="/profile"><i class="fas fa-user-circle"></i> My Profile</a>
+              <a href="/orders"><i class="fas fa-shopping-bag"></i> My Orders</a>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <% } else { %>
+              <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+              <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+            <% } %>
+            <hr>
+            <a href="/admin/login"><i class="fas fa-cog"></i> Admin Panel</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <section class="products">
+    <div class="container">
+      <h2>Our Products</h2>
+      
+      <!-- Search and Filter Bar -->
+      <div class="product-controls">
+        <div class="search-bar">
+          <input type="text" id="product-search" placeholder="Search products..." class="search-input">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div class="filter-sort">
+          <select id="sort-select" class="sort-select">
+            <option value="">Sort by</option>
+            <option value="name">Name</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+          
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="birthday">Birthday</button>
+            <button class="filter-btn" data-category="couple">Couple</button>
+            <button class="filter-btn" data-category="baby">Baby</button>
+            <button class="filter-btn" data-category="corporate">Corporate</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="products-grid">
+        <% products.forEach(product => { %>
+        <div class="product-card" data-category="<%= product.category || 'general' %>">
+          <div class="product-image-container">
+            <img src="<%= product.image || 'https://via.placeholder.com/300x200' %>" alt="<%= product.name %>">
+            <button class="wishlist-btn" data-id="<%= product._id %>">🤍</button>
+            <button class="quick-view-btn" onclick="showQuickView('<%= product._id %>')">👁️ Quick View</button>
+          </div>
+          <h3><%= product.name %></h3>
+          <p><%= product.description %></p>
+          <p class="price">$<%= product.price %></p>
+          <div class="product-actions">
+            <button class="btn customize-btn" data-id="<%= product._id %>">✨ Customize Now</button>
+            <button class="btn add-to-cart" data-id="<%= product._id %>">Add to Cart</button>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Customization Modal -->
+  <div id="customization-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Make It Personal! ✨</h2>
+      <div class="customization-form">
+        <div class="preview-section">
+          <img id="preview-image" src="" alt="Product Preview">
+          <div id="preview-text" class="preview-text"></div>
+        </div>
+        <div class="options-section">
+          <div class="option-group">
+            <label for="custom-text">🖊 Add Name/Text:</label>
+            <input type="text" id="custom-text" placeholder="Enter name or message">
+            <select id="font-select">
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Georgia">Georgia</option>
+            </select>
+          </div>
+          <div class="option-group">
+            <label for="custom-photo">🖼 Upload Photo:</label>
+            <input type="file" id="custom-photo" accept="image/*">
+          </div>
+          <div class="option-group">
+            <label>🎨 Choose Color:</label>
+            <div class="color-options">
+              <button class="color-btn" data-color="#F8C8DC">Pink</button>
+              <button class="color-btn" data-color="#FFD6BA">Peach</button>
+              <button class="color-btn" data-color="#B76E79">Rose Gold</button>
+              <button class="color-btn" data-color="#FFF5E4">Cream</button>
+            </div>
+          </div>
+          <div class="option-group">
+            <label for="custom-message">💬 Add Message:</label>
+            <textarea id="custom-message" placeholder="Your special message..."></textarea>
+          </div>
+          <div class="option-group">
+            <label>
+              <input type="checkbox" id="gift-wrap"> 📦 Gift Wrap (+$5)
+            </label>
+          </div>
+          <div class="option-group">
+            <label>
+              <input type="checkbox" id="express-delivery"> 🚚 Express Delivery (+$10)
+            </label>
+          </div>
+          <button class="btn" id="add-customized-to-cart">Add to Cart - $<span id="total-price">0</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 GiftShop. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/js/script.js"></script>
+</body>
+</html>

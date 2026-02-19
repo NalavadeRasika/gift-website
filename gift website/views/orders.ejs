@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - GiftShop</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="logo">
+        <a href="/">
+          <i class="fas fa-gift"></i>
+          GiftShop
+        </a>
+      </h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart <span id="cart-count" class="cart-count">0</span></a>
+        <a href="/wishlist">Wishlist <span id="wishlist-count" class="cart-count">0</span></a>
+        <div class="profile-dropdown">
+          <button class="profile-btn">
+            <i class="fas fa-user"></i>
+            Account
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="/profile"><i class="fas fa-user-circle"></i> My Profile</a>
+            <a href="/orders"><i class="fas fa-shopping-bag"></i> My Orders</a>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <hr>
+            <a href="/admin/login"><i class="fas fa-cog"></i> Admin Panel</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="orders-section">
+    <div class="container">
+      <h2>📦 My Orders</h2>
+      
+      <div id="orders-empty" class="empty-message">
+        <p>You haven't placed any orders yet</p>
+        <a href="/products" class="btn">Start Shopping</a>
+      </div>
+
+      <div id="orders-list" style="display: none;">
+        <div class="orders-grid">
+          <!-- Orders will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 GiftShop. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    async function loadOrders() {
+      try {
+        const response = await fetch('/api/user/orders');
+        const data = await response.json();
+        
+        if (!data.success || data.orders.length === 0) {
+          document.getElementById('orders-empty').style.display = 'block';
+          return;
+        }
+
+        document.getElementById('orders-empty').style.display = 'none';
+        document.getElementById('orders-list').style.display = 'block';
+
+        const container = document.querySelector('.orders-grid');
+        container.innerHTML = '';
+
+        data.orders.forEach(order => {
+          const orderDate = new Date(order.createdAt).toLocaleDateString();
+          const statusColor = {
+            'Pending': '#ff9800',
+            'Paid': '#4caf50',
+            'Shipped': '#2196f3',
+            'Delivered': '#8bc34a',
+            'Cancelled': '#f44336'
+          }[order.status] || '#999';
+
+          let itemsHTML = '';
+          if (order.items && order.items.length > 0) {
+            itemsHTML = order.items.map(item => `
+              <div class="order-item-detail">
+                <span>${item.product?.name || 'Product'}</span>
+                <span>x${item.quantity}</span>
+                <span>$${(item.quantity * (item.product?.price || 0)).toFixed(2)}</span>
+              </div>
+            `).join('');
+          }
+
+          container.innerHTML += `
+            <div class="order-card">
+              <div class="order-header">
+                <div>
+                  <h3>Order #${order._id.toString().slice(-8).toUpperCase()}</h3>
+                  <p class="order-date">${orderDate}</p>
+                </div>
+                <span class="order-status" style="background-color: ${statusColor}; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">
+                  ${order.status || 'Pending'}
+                </span>
+              </div>
+              
+              <div class="order-items">
+                ${itemsHTML || '<p>No items</p>'}
+              </div>
+              
+              <div class="order-footer">
+                <div class="order-total">
+                  <strong>Total:</strong> <strong style="color: #B76E79; font-size: 1.2rem;">$${(order.total || 0).toFixed(2)}</strong>
+                </div>
+                <div class="order-actions">
+                  <button class="btn-view" onclick="viewOrderDetails('${order._id}')">View Details</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('orders-empty').style.display = 'block';
+      }
+    }
+
+    function viewOrderDetails(orderId) {
+      alert('Order details for: ' + orderId);
+      // You can add more functionality here
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>

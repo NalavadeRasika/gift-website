@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - GiftShop</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="logo">
+        <a href="/">
+          <i class="fas fa-gift"></i>
+          GiftShop
+        </a>
+      </h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart <span id="cart-count" class="cart-count">0</span></a>
+        <a href="/wishlist">Wishlist <span id="wishlist-count" class="cart-count">0</span></a>
+        <div class="profile-dropdown">
+          <button class="profile-btn">
+            <i class="fas fa-user"></i>
+            Account
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="/profile"><i class="fas fa-user-circle"></i> My Profile</a>
+            <a href="/orders"><i class="fas fa-shopping-bag"></i> My Orders</a>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <hr>
+            <a href="/admin/login"><i class="fas fa-cog"></i> Admin Panel</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="profile-section">
+    <div class="container">
+      <h2>👤 My Profile</h2>
+      
+      <div class="profile-card">
+        <h3>Account Information</h3>
+        <div class="profile-info">
+          <p><strong>Username:</strong> <%= session.username %></p>
+          <p><strong>Member Since:</strong> 2026</p>
+        </div>
+        
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/orders">📦 View My Orders</a></li>
+          <li><a href="/wishlist">❤️ My Wishlist</a></li>
+          <li><a href="/products">🛍️ Continue Shopping</a></li>
+        </ul>
+        
+        <div class="profile-actions">
+          <button class="btn">Edit Profile</button>
+          <button class="btn" onclick="changePassword()">Change Password</button>
+          <a href="/logout" class="btn" style="background: #dc2626;">Logout</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 GiftShop. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function changePassword() {
+      alert('Password change feature coming soon!');
+    }
+  </script>
+</body>
+</html>

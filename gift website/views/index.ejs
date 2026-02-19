@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gift Shop - Find the Perfect Gift</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="logo">
+        <a href="/">
+          <i class="fas fa-gift"></i>
+          GiftShop
+        </a>
+      </h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart <span id="cart-count" class="cart-count">0</span></a>
+        <a href="/wishlist">Wishlist <span id="wishlist-count" class="cart-count">0</span></a>
+        <div class="profile-dropdown">
+          <button class="profile-btn">
+            <i class="fas fa-user"></i>
+            <% if (session && session.user) { %>
+              Account
+            <% } else { %>
+              Account
+            <% } %>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <% if (session && session.user) { %>
+              <a href="/profile"><i class="fas fa-user-circle"></i> My Profile</a>
+              <a href="/orders"><i class="fas fa-shopping-bag"></i> My Orders</a>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <% } else { %>
+              <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+              <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+            <% } %>
+            <hr>
+            <a href="/admin/login"><i class="fas fa-cog"></i> Admin Panel</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <% if (session && session.user) { %>
+    <div class="welcome-section">
+      <div class="container welcome-content">
+        <h2>👋 Welcome Back!</h2>
+        <p class="user-greeting">Happy to see you, <strong><%= session.username %></strong></p>
+        <div class="quick-actions">
+          <a href="/cart" class="btn-quick">🛍️ My Cart</a>
+          <a href="/orders" class="btn-quick">📦 My Orders</a>
+          <a href="/wishlist" class="btn-quick">❤️ Wishlist</a>
+        </div>
+      </div>
+    </div>
+  <% } %>
+  <section class="hero">
+    <div class="container">
+      <h2>Make It Personal ✨</h2>
+      <p>Create unique gifts that tell your story. Customize with names, photos, and special messages.</p>
+      <a href="/products" class="btn">Start Customizing</a>
+    </div>
+  </section>
+  <section class="featured">
+    <div class="container">
+      <h2>Shop by Occasion</h2>
+      <div class="categories-grid">
+        <div class="category-card">
+          <h3>🎂 Birthday Gifts</h3>
+          <p>Personalized birthday surprises</p>
+          <a href="/products?category=birthday" class="btn">Explore</a>
+        </div>
+        <div class="category-card">
+          <h3>💕 Couple Gifts</h3>
+          <p>Romantic personalized items</p>
+          <a href="/products?category=couple" class="btn">Explore</a>
+        </div>
+        <div class="category-card">
+          <h3>👶 Baby Gifts</h3>
+          <p>Adorable customized baby items</p>
+          <a href="/products?category=baby" class="btn">Explore</a>
+        </div>
+        <div class="category-card">
+          <h3>🏢 Corporate Gifts</h3>
+          <p>Professional branded gifts</p>
+          <a href="/products?category=corporate" class="btn">Explore</a>
+        </div>
+      </div>
+      <h2>Featured Products</h2>
+      <div class="products-grid">
+        <% products.forEach(product => { %>
+        <div class="product-card">
+          <img src="<%= product.image || 'https://via.placeholder.com/300x200' %>" alt="<%= product.name %>">
+          <h3><%= product.name %></h3>
+          <p><%= product.description %></p>
+          <p class="price">$<%= product.price %></p>
+          <div class="product-actions">
+            <a href="/products" class="btn customize-btn">✨ Customize Now</a>
+            <button class="btn add-to-cart" data-id="<%= product._id %>">Add to Cart</button>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 GiftShop. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/js/script.js"></script>
+</body>
+</html>
